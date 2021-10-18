@@ -17,7 +17,7 @@
 
 syntax = "proto3";
 
-option go_package="github.com/google/go-replayers/grpcreplay/proto/intstore";
+option go_package = "github.com/kylycht/go-replayers/grpcreplay/proto/intstore";
 
 package intstore;
 
@@ -41,17 +41,11 @@ message Item {
   int32 value = 2;
 }
 
-message SetResponse {
-  int32 prev_value = 1;
-}
+message SetResponse { int32 prev_value = 1; }
 
-message GetRequest {
-  string name = 1;
-}
+message GetRequest { string name = 1; }
 
-message Summary {
-  int32 count = 1;
-}
+message Summary { int32 count = 1; }
 
 message ListItemsRequest {
   // Only list items whose value is greater than this.

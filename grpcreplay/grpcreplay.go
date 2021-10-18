@@ -26,7 +26,7 @@ import (
 	"os"
 	"sync"
 
-	pb "github.com/google/go-replayers/grpcreplay/proto/grpcreplay"
+	pb "github.com/kylycht/go-replayers/grpcreplay/proto/grpcreplay"
 	spb "google.golang.org/genproto/googleapis/rpc/status"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"

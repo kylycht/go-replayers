@@ -24,8 +24,8 @@ import (
 
 	"github.com/google/go-cmp/cmp"
 	"github.com/google/go-cmp/cmp/cmpopts"
-	rpb "github.com/google/go-replayers/grpcreplay/proto/grpcreplay"
-	ipb "github.com/google/go-replayers/grpcreplay/proto/intstore"
+	rpb "github.com/kylycht/go-replayers/grpcreplay/proto/grpcreplay"
+	ipb "github.com/kylycht/go-replayers/grpcreplay/proto/intstore"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
