@@ -507,12 +507,11 @@ func (rcs *repClientStream) CloseSend() error {
 func (rep *Replayer) extractCall(method string, req proto.Message) *call {
 	rep.mu.Lock()
 	defer rep.mu.Unlock()
-	for i, call := range rep.calls {
+	for _, call := range rep.calls {
 		if call == nil {
 			continue
 		}
 		if method == call.method && proto.Equal(req, call.request) {
-			rep.calls[i] = nil // nil out this call so we don't reuse it
 			return call
 		}
 	}
@@ -525,7 +524,7 @@ func (rep *Replayer) extractCall(method string, req proto.Message) *call {
 func (rep *Replayer) extractStream(method string, req proto.Message) *stream {
 	rep.mu.Lock()
 	defer rep.mu.Unlock()
-	for i, stream := range rep.streams {
+	for _, stream := range rep.streams {
 		// Skip stream if it is nil (already extracted) or its method doesn't match.
 		if stream == nil || stream.method != method {
 			continue
@@ -535,7 +534,6 @@ func (rep *Replayer) extractStream(method string, req proto.Message) *stream {
 		if req != nil && len(stream.sends) > 0 && !proto.Equal(req, stream.sends[0].msg) {
 			continue
 		}
-		rep.streams[i] = nil // nil out this stream so we don't reuse it
 		return stream
 	}
 	return nil
