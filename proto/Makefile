@@ -19,14 +19,14 @@ PROTOC=/usr/local/bin/protoc
 PROTOC_GO_PLUGIN_DIR=$(GOPATH)/bin
 
 # The repo github.com/google/protobuf.
-PROTOBUF_REPO=/Users/tkila/go/src/github.com/golang/protobuf
+PROTOBUF_REPO=/Users/tkila/go/src/github.com/google/protobuf
 
 gen-protos:  sync-protobuf
 	for d in *; do \
             if [ -d $$d ]; then \
 	        PATH=$(PATH):$(PROTOC_GO_PLUGIN_DIR) \
-	        $(PROTOC) --go_out=plugins=grpc:$$d \
-	        -I $$d -I $(PROTOBUF_REPO)/src $$d/*.proto; \
+	        $(PROTOC) --go_out=. --go-grpc_out=. \
+	        -I grpcreplay -I $(PROTOBUF_REPO)/src grpcreplay/grpcreplay.proto; \
             fi \
 	done
 

@@ -9,12 +9,12 @@ import (
 	"os"
 	"sync"
 
-	"github.com/golang/protobuf/proto"
 	pb "github.com/kylycht/go-replayers/grpcreplay/proto/grpcreplay"
 	"github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
+	"google.golang.org/protobuf/proto"
 )
 
 // A Recorder records RPCs for later playback.

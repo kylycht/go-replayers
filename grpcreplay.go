@@ -26,13 +26,13 @@ import (
 	"os"
 	"sync"
 
-	"github.com/golang/protobuf/proto"
 	pb "github.com/kylycht/go-replayers/grpcreplay/proto/grpcreplay"
 	spb "google.golang.org/genproto/googleapis/rpc/status"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/encoding/prototext"
+	"google.golang.org/protobuf/proto"
 	anypb "google.golang.org/protobuf/types/known/anypb"
 )
 
@@ -128,7 +128,7 @@ func (rep *Replayer) read(r io.Reader) error {
 			if call == nil {
 				return fmt.Errorf("replayer: no request for response #%d", i)
 			}
-			delete(callsByIndex, e.checksum)
+
 			call.response = e.msg
 			rep.calls[e.checksum] = call
 
@@ -362,7 +362,7 @@ func FprintReader(w io.Writer, r io.Reader) error {
 			return nil
 		}
 
-		fmt.Fprintf(w, "#%d: kind: %s, method: %s, ref checksum: %d", i, e.kind, e.method, e.checksum)
+		fmt.Fprintf(w, "#%d: kind: %s, method: %s, ref checksum: %s", i, e.kind, e.method, e.checksum)
 		switch {
 		case e.msg.msg != nil:
 			fmt.Fprintf(w, ", message:\n")

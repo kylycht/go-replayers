@@ -3,10 +3,9 @@ module github.com/kylycht/go-replayers/grpcreplay
 go 1.16
 
 require (
-	github.com/golang/protobuf v1.5.2
-	github.com/google/go-cmp v0.5.6 // indirect
+	github.com/golang/protobuf v1.5.0
 	github.com/sirupsen/logrus v1.8.1
-	google.golang.org/genproto v0.0.0-20211016002631-37fc39342514
-	google.golang.org/grpc v1.41.0
-	google.golang.org/protobuf v1.27.1
+	google.golang.org/genproto v0.0.0-20200526211855-cb27e3aa2013
+	google.golang.org/grpc v1.38.0
+	google.golang.org/protobuf v1.26.0
 )
