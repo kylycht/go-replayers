@@ -226,10 +226,12 @@ func (rep *Replayer) interceptStream(ctx context.Context, _ *grpc.StreamDesc, _ 
 }
 
 type repClientStream struct {
-	ctx    context.Context
-	rep    *Replayer
-	method string
-	str    *stream
+	ctx       context.Context
+	rep       *Replayer
+	method    string
+	str       *stream
+	sendIndex int
+	recvIndex int
 }
 
 func (rcs *repClientStream) Context() context.Context { return rcs.ctx }
@@ -245,8 +247,8 @@ func (rcs *repClientStream) SendMsg(req interface{}) error {
 			rcs.str.method, rcs.str.createIndex)
 	}
 	// TODO(jba): Do not assume that the sends happen in the same order on replay.
-	msg := rcs.str.sends[0]
-	rcs.str.sends = rcs.str.sends[1:]
+	msg := rcs.str.sends[rcs.sendIndex]
+	rcs.sendIndex++
 	return msg.err
 }
 
@@ -273,11 +275,12 @@ func (rcs *repClientStream) RecvMsg(m interface{}) error {
 		return fmt.Errorf("replayer: no more receives for stream %s, created at index %d",
 			rcs.str.method, rcs.str.createIndex)
 	}
-	msg := rcs.str.recvs[0]
-	rcs.str.recvs = rcs.str.recvs[1:]
+
+	msg := rcs.str.recvs[rcs.recvIndex]
 	if msg.err != nil {
 		return msg.err
 	}
+	rcs.recvIndex++
 	proto.Merge(m.(proto.Message), msg.msg) // copy msg into m
 	return nil
 }
