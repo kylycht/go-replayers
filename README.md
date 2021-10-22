@@ -30,6 +30,6 @@ directly from Go code, or you can run the `httpr` command at
 
 ## grpcreplay
 
-The [`grpcreplay` package](https://godoc.org/github.com/kylycht/go-replayers/grpcreplay)
+The [`grpcreplay` package](https://godoc.org/github.com/kylycht/go-replayers)
 works with [gRPC](https://grpc.io) traffic. There is no corresponding command.
 

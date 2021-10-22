@@ -26,7 +26,7 @@ import (
 	"os"
 	"sync"
 
-	pb "github.com/kylycht/go-replayers/grpcreplay/proto/grpcreplay"
+	pb "github.com/kylycht/go-replayers/proto/grpcreplay"
 	spb "google.golang.org/genproto/googleapis/rpc/status"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"
@@ -117,6 +117,12 @@ func (r *Recorder) Close() error {
 
 // Intercepts all unary (non-stream) RPCs.
 func (r *Recorder) interceptUnary(ctx context.Context, method string, req, res interface{}, cc *grpc.ClientConn, invoker grpc.UnaryInvoker, opts ...grpc.CallOption) error {
+	// ignore error call
+	ierr := invoker(ctx, method, req, res, cc, opts...)
+	if ierr != nil {
+		return ierr
+	}
+
 	ereq := &entry{
 		kind:   pb.Entry_REQUEST,
 		method: method,
@@ -132,7 +138,7 @@ func (r *Recorder) interceptUnary(ctx context.Context, method string, req, res i
 	if err != nil {
 		return err
 	}
-	ierr := invoker(ctx, method, req, res, cc, opts...)
+
 	eres := &entry{
 		kind:     pb.Entry_RESPONSE,
 		refIndex: refIndex,
@@ -432,10 +438,24 @@ func (rep *Replayer) interceptStream(ctx context.Context, _ *grpc.StreamDesc, _ 
 }
 
 type repClientStream struct {
-	ctx    context.Context
-	rep    *Replayer
-	method string
-	str    *stream
+	ctx       context.Context
+	rep       *Replayer
+	method    string
+	str       *stream
+	sendIndex int
+	recvIndex int
+}
+
+func (rcs *repClientStream) getRecvIndex() int {
+	i := rcs.recvIndex
+	rcs.recvIndex++
+	return i
+}
+
+func (rcs *repClientStream) getSendIndex() int {
+	i := rcs.sendIndex
+	rcs.sendIndex++
+	return i
 }
 
 func (rcs *repClientStream) Context() context.Context { return rcs.ctx }
@@ -451,8 +471,7 @@ func (rcs *repClientStream) SendMsg(req interface{}) error {
 			rcs.str.method, rcs.str.createIndex)
 	}
 	// TODO(jba): Do not assume that the sends happen in the same order on replay.
-	msg := rcs.str.sends[0]
-	rcs.str.sends = rcs.str.sends[1:]
+	msg := rcs.str.sends[rcs.getSendIndex()]
 	return msg.err
 }
 
@@ -479,8 +498,7 @@ func (rcs *repClientStream) RecvMsg(m interface{}) error {
 		return fmt.Errorf("replayer: no more receives for stream %s, created at index %d",
 			rcs.str.method, rcs.str.createIndex)
 	}
-	msg := rcs.str.recvs[0]
-	rcs.str.recvs = rcs.str.recvs[1:]
+	msg := rcs.str.recvs[rcs.getRecvIndex()]
 	if msg.err != nil {
 		return msg.err
 	}

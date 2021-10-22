@@ -18,7 +18,7 @@ package grpcreplay;
 
 import "google/protobuf/any.proto";
 
-option go_package = "github.com/kylycht/go-replayers/grpcreplay/proto/grpcreplay";
+option go_package = "github.com/kylycht/go-replayers";
 
 // An Entry represents a single RPC activity, typically a request or response.
 message Entry {
