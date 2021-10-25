@@ -577,6 +577,7 @@ func FprintReader(w io.Writer, r io.Reader) error {
 	}
 	fmt.Fprintf(w, "initial state: %q\n", string(initial))
 	for i := 1; ; i++ {
+		fmt.Fprintf(w, "\n###############################################################################################################################\n")
 		e, err := readEntry(r)
 		if err != nil {
 			return err
